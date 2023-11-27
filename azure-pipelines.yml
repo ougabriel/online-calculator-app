@@ -10,7 +10,7 @@ steps:
     publishWebProjects: true
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'gab-terraform'
+    azureSubscription: 'gab-dotNetSP'
     appType: 'webAppLinux'
-    appName: 'gab-onlinecalculatorApp'
+    appName: 'gab-webapp'
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
