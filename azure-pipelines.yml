@@ -1,4 +1,10 @@
-variables:
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables: 
   buildConfiguration: 'Release'
 
 steps:
@@ -8,9 +14,24 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+- task: DownloadBuildArtifacts@1
+  inputs:
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: 'drop'
+    downloadPath: '$(Build.ArtifactsDirectory)'
+
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'gab-dotNetSP'
-    appType: 'webAppLinux'
-    appName: 'gab-webapp'
-    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    azureSubscription: 'fence-svcconnect'
+    appType: 'webApp'
+    appName: 'umbrella-app123'
+    package: '$(Build.ArtifactsDirectory)/drop/*.zip'
+    deploymentMethod: 'auto'
